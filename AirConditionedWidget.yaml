@@ -1,0 +1,882 @@
+uid: AirConditionController
+tags: []
+props:
+  parameters:
+    - description: eg. living room
+      label: location and widget identifier
+      name: location
+      required: true
+      type: TEXT
+    - description: Visual size of the control in px (default 400px), without a size the design is responsive
+      label: size [px]
+      name: size
+      required: false
+      type: TEXT
+    - description: Minimum value
+      label: minTemp
+      name: minTemp
+      required: true
+      type: TEXT
+    - description: Maximum value
+      label: maxTemp
+      name: maxTemp
+      required: true
+    - context: item
+      description: Item to control power state
+      label: Power Item
+      name: powerItem
+      required: true
+      type: TEXT
+    - context: item
+      description: Item to control target temperature
+      label: Set point Item
+      name: setPointItem
+      required: true
+      type: TEXT
+    - context: item
+      label: Item for current temperature
+      name: currentPointItem
+      required: true
+      type: TEXT
+    - description: Control item unit eg °C
+      label: unit
+      name: unit
+      required: false
+      type: TEXT
+    - context: item
+      description: Cooling Mode Item
+      label: Cooling Mode Item
+      name: coolingModeItem
+      required: true
+      type: TEXT
+    - description: Cooling Mode Array
+      label: "Sequence of modes represented by sequence of colors: orange, red, yellow, white or blue (otherwise blue)"
+      name: coolingModeArray
+      required: true
+      type: TEXT
+    - context: item
+      description: Fanspeed Item
+      label: Fanspeed Mode Item
+      name: fanSpeedItem
+      required: true
+      type: TEXT
+    - context: item
+      description: Vane Position Item
+      label: Vane Item
+      name: vaneItem
+      required: true
+      type: TEXT
+    - context: item
+      label: Item to display window state
+      name: windowItem
+      required: false
+      type: TEXT
+      advanced: true
+    - label: Custom font-size current&set-point marker (eg. 1em)
+      name: fontSizeMarker
+      required: false
+      type: TEXT
+      groupName: fonts
+      advanced: true
+    - label: Custom font-Size center (eg. 2em)
+      name: fontSizeCenter
+      required: false
+      type: TEXT
+      groupName: fonts
+      advanced: true
+    - label: Custom font-Size buttons (eg. 1.8em)
+      name: fontSizeButtons
+      required: false
+      type: TEXT
+      groupName: fonts
+      advanced: true
+    - label: Custom font-Size footer (eg. 1em)
+      name: fontSizeFooter
+      required: false
+      type: TEXT
+      groupName: fonts
+      advanced: true
+    - label: Main-Color Controller
+      name: colorController
+      required: false
+      type: TEXT
+      groupName: colors
+      advanced: true
+    - label: Color control ring
+      name: colorControlRing
+      required: false
+      type: TEXT
+      groupName: colors
+      advanced: true
+    - label: Color buttons
+      name: colorButton
+      required: false
+      type: TEXT
+      groupName: colors
+      advanced: true
+    - label: Color center
+      name: colorCenter
+      required: false
+      type: TEXT
+      groupName: colors
+      advanced: true
+    - label: Color Typo
+      name: colorTypo
+      required: false
+      type: TEXT
+      groupName: colors
+      advanced: true
+    - label: Color setPoint Marker
+      name: colorSetMarker
+      required: false
+      type: TEXT
+      groupName: colors
+      advanced: true
+    - label: Color currentPoint Marker
+      name: colorCurrentMarker
+      required: false
+      type: TEXT
+      groupName: colors
+      advanced: true
+    - label: Color bar linear gradient startPoint
+      name: colorBarStartPoint
+      required: false
+      type: TEXT
+      groupName: colors
+      advanced: true
+    - label: Color bar linear gradient endPoint
+      name: colorBarEndPoint
+      required: false
+      type: TEXT
+      groupName: colors
+      advanced: true
+  parameterGroups:
+    - name: colors
+      label: Color-Settings
+    - name: fonts
+      label: Font-Settings
+timestamp: Mar 3, 2022, 6:34:12 PM
+component: f7-card
+config:
+  style:
+    background-color: "=themeOptions.dark === 'light' ? 'white' : 'black'"
+    border-radius: var(--f7-card-expandable-border-radius)
+    box-shadow: 5px 5px 10px 1px rgba(0,0,0,0.1)
+    class:
+      - padding: 0px
+    noShadow: true
+slots:
+  default:
+    - component: f7-card-content
+      slots:
+        default:
+          - component: f7-row
+            config:
+              class:
+                - justify-content-center
+              resizable-absolute: true
+              resizableFixed: true
+            slots:
+              default:
+                - component: f7-block
+                  config:
+                    class: thermostat
+                    style:
+                      --f7-block-margin-vertical: 0px
+                      --f7-block-padding-horizontal: 0px
+                      --f7-block-padding-vertical: 0px
+                      background: "=props.colorController ? props.colorController : 'var(--f7-toggle-inactive-color)'"
+                      border: 2px solid rgb(64, 60, 77)
+                      border-radius: 50%
+                      box-sizing: content-box
+                      flex-shrink: 0
+                      padding-left: 0px
+                      padding-top: "=props.size ? props.size + 'px': '100%'"
+                      width: "=props.size ? Number(props.size)+'px' : '100%'"
+                  slots:
+                    default:
+                      - component: f7-block
+                        config:
+                          class: bar
+                          style:
+                            border-radius: 50%
+                            height: "=props.size ? (Number(props.size)*0.89) +'px' : '89%'"
+                            left: 50%
+                            margin-top: 0px
+                            position: absolute
+                            top: 50%
+                            transform: translate(-50%, -50%)
+                            width: "=props.size ? (Number(props.size)*0.89) +'px' : '89%'"
+                        slots:
+                          default:
+                            - component: f7-block
+                              config:
+                                class: inner_bar
+                                style:
+                                  background-color: "=props.colorController ? props.colorController : 'var(--f7-toggle-inactive-color)'"
+                                  border-radius: 100%
+                                  height: "=props.size ? (Number(props.size)*0.86) +'px' : '97%'"
+                                  left: 50%
+                                  margin-top: 0
+                                  position: absolute
+                                  top: 50%
+                                  transform: translate(-50%, -50%)
+                                  width: "=props.size ? (Number(props.size)*0.86) +'px' : '97%'"
+                                  z-index: 4 !important
+                              slots:
+                                default:
+                                  - component: f7-block
+                                    config:
+                                      style:
+                                        background: "='conic-gradient(transparent 0deg 160deg, ' + (props.colorController ? props.colorController : 'var(--f7-toggle-inactive-color)') + ' 160deg 200deg, transparent 200deg 360deg)'"
+                                        bottom: "=props.size ? '-7px' : '-7px'"
+                                        content: ""
+                                        display: block
+                                        height: 100%
+                                        left: 50%
+                                        position: absolute
+                                        transform: translate(-50%)
+                                        width: 100%
+                            - component: f7-block
+                              config:
+                                class: hold left
+                                style:
+                                  background-color: rgb(58, 55, 73)
+                                  border-radius: 100%
+                                  clip-path: "=props.size ? 'inset(0px 0px 0px ' + (Number(props.size)*0.89/2) + 'px)' : 'inset(0% 0% 0% 50%)'"
+                                  height: 100%
+                                  margin-top: 0px
+                                  position: absolute
+                                  width: 100%
+                              slots:
+                                default:
+                                  - component: f7-block
+                                    config:
+                                      class: fill fill1
+                                      style:
+                                        background: "=props.colorBarStartPoint && props.colorBarEndPoint ? '-webkit-linear-gradient(top, ' + props.colorBarEndPoint + ' 20%,' + props.colorBarEndPoint + ' 100%)' : '-webkit-linear-gradient(top, rgb(255, 73, 0) 20%,rgb(255, 73, 0) 100%)'"
+                                        border-radius: 100%
+                                        clip-path: "=props.size ? 'inset(0px ' + (Number(props.size)*0.89/2) + 'px 0px 0px)' : 'inset(0% 50% 0% 0%)'"
+                                        height: 100%
+                                        margin-top: 0px
+                                        position: absolute
+                                        transform: "=(items[props.setPointItem].state.split(' ')[0] >= (((Number(props.maxTemp) - Number(props.minTemp)) / 2) + Number(props.minTemp)) && items[props.setPointItem].state.split(' ')[0] <= Number(props.maxTemp) ? 'rotate('+(320/(Number(props.maxTemp)-Number(props.minTemp))*(items[props.setPointItem].state.split(' ')[0]-Number(props.minTemp))-160)+'deg)' : (items[props.setPointItem].state.split(' ')[0] > Number(props.maxTemp)) ? 'rotate(180deg)' : '')"
+                                        transition: transform 0.6s
+                                        width: 100%
+                                        z-index: 1 !important
+                            - component: f7-block
+                              config:
+                                class: hold right
+                                style:
+                                  background-color: rgb(58, 55, 73)
+                                  border-radius: 100%
+                                  clip-path: "=props.size ? 'inset(0px 0px 0px ' + (Number(props.size)*0.89/2) + 'px)' : 'inset(0% 0% 0% 50%)'"
+                                  height: 100%
+                                  margin-top: 0px
+                                  position: absolute
+                                  transform: rotate(180deg)
+                                  width: 100%
+                                  z-index: 3 !important
+                              slots:
+                                default:
+                                  - component: f7-block
+                                    config:
+                                      class: fill
+                                      style:
+                                        animation: right 1s linear both
+                                        border-radius: 100%
+                                        height: 100%
+                                        margin-top: 0px
+                                        position: absolute
+                                        transition: transform 0.6s
+                                        width: 100%
+                                        z-index: 3 !important
+                                  - component: f7-block
+                                    config:
+                                      class: fill fill2
+                                      style:
+                                        background: "=props.colorBarStartPoint && props.colorBarEndPoint ? '-webkit-linear-gradient(top, ' + props.colorBarEndPoint + ' 40%,' + props.colorBarStartPoint + ' 100%)' : '-webkit-linear-gradient(top, rgb(255, 73, 0) 40%,rgb(255, 158, 35) 100%)'"
+                                        border-radius: 50%
+                                        clip-path: "=props.size ? 'inset(0px '+ (Number(props.size)*0.89/2) + 'px 0px 0px)' : 'inset(0% 50% 0% 0%)'"
+                                        height: 100%
+                                        margin-top: 0px
+                                        position: absolute
+                                        transform: "=(items[props.setPointItem].state.split(' ')[0] <= (((Number(props.maxTemp) - Number(props.minTemp)) / 2) + Number(props.minTemp)) && items[props.setPointItem].state.split(' ')[0] >= Number(props.minTemp) ? 'rotate('+(320/(Number(props.maxTemp)-Number(props.minTemp))*(items[props.setPointItem].state.split(' ')[0]-Number(props.minTemp))+20)+'deg)' : (items[props.setPointItem].state.split(' ')[0] > (((Number(props.maxTemp) - Number(props.minTemp)) / 2) + Number(props.minTemp))) ? 'rotate(180deg)' :  '')"
+                                        width: 100%
+                                        z-index: 3 !important
+                            - component: f7-block
+                              config:
+                                class: span
+                                style:
+                                  bottom: 0px
+                                  color: "=props.colorTypo ? props.colorTypo : 'rgb(87, 84, 95)'"
+                                  font-size: "=props.fontSizeFooter ? props.fontSizeFooter : '1em'"
+                                  font-weight: "=props.size ? (Number(props.size)*2) +'px' : 'calc(var(--f7-list-item-title-font-weight)*2)'"
+                                  margin-top: 0px
+                                  position: absolute
+                                  text-align: center
+                                  text-transform: uppercase
+                                  width: "=props.size ? (Number(props.size)*0.89) +'px' : '100%'"
+                                  z-index: 99 !important
+                              slots:
+                                default:
+                                  - component: Label
+                                    config:
+                                      style:
+                                        color: "=themeOptions.dark === 'light' ? 'black' : 'white'"
+                                      text: =items[props.coolingModeItem].displayState
+                      - component: f7-block
+                        config:
+                          class: shadow
+                          style:
+                            animation: shadow 1.4s ease-out both
+                            height: 86%
+                            left: 50%
+                            margin-top: 0px
+                            position: absolute
+                            text-align: center
+                            top: 50%
+                            transform: "=(items[props.setPointItem].state.split(' ')[0] >= Number(props.minTemp) && items[props.setPointItem].state.split(' ')[0] <= Number(props.maxTemp) ? 'translate(-50%, -50%) rotate('+(320/(Number(props.maxTemp)-Number(props.minTemp))*(items[props.setPointItem].state.split(' ')[0]-Number(props.minTemp))-160)+'deg)' : 'translate(-50%, -50%) rotate(0deg)')"
+                            transition: 0.7s ease
+                            width: "=props.size ? (Number(props.size)*0.0625) +'px' : '6.25%'"
+                        slots:
+                          default:
+                            - component: f7-block
+                              config:
+                                class: shadow-cube
+                                style:
+                                  box-shadow: "=props.size ? '0 0 ' + (Number(props.size)*0.1125) +'px ' + (Number(props.size)*0.0325) + 'px ' + (props.colorSetMarker ? props.colorSetMarker : 'rgba(255, 158, 35, 0.5)'): '0 0 45px 13px rgba(255, 158, 35, 0.5)'"
+                                  height: 0px
+                                  margin-top: 0px
+                                  position: absolute
+                                  top: 0
+                                  width: "=props.size ? (Number(props.size)*0.0625) +'px' : '100%'"
+                      - component: f7-block
+                        config:
+                          class: markerContainer
+                          style:
+                            height: 100%
+                            left: 50%
+                            margin-top: 0px
+                            opacity: 1
+                            pointer-events: none
+                            position: absolute
+                            text-align: center
+                            top: 50%
+                            transform: "=(items[props.currentPointItem].state.split(' ')[0] >= Number(props.minTemp) && items[props.currentPointItem].state.split(' ')[0] <= Number(props.maxTemp) ? 'translate(-50%, -50%) rotate('+(320/(Number(props.maxTemp)-Number(props.minTemp))*(items[props.currentPointItem].state.split(' ')[0]-Number(props.minTemp))-160)+'deg)' : 'translate(-50%, -50%) rotate(0deg)')"
+                            transition: 0.7s ease
+                            width: "=props.size ? (Number(props.size)*0.1) +'px' : '10%'"
+                            z-index: 99 !important
+                        slots:
+                          default:
+                            - component: f7-block
+                              config:
+                                class: markerCurrent
+                                style:
+                                  background: "=props.colorCurrentMarker ? props.colorCurrentMarker : 'rgb(230, 74, 25)'"
+                                  border-radius: 0% 50% 50% 50%
+                                  box-shadow: 0 0 5px 1px rgb(48, 46, 56)
+                                  height: "=props.size ? (Number(props.size)*0.1) +'px' : ''"
+                                  left: 50%
+                                  margin-top: 0px
+                                  padding-top: "=props.size ? '' : '100%'"
+                                  position: absolute
+                                  top: "=props.size ? (Number(props.size)*0.14) +'px' : '15%'"
+                                  transform: translate(-50%,-50%) rotate(45deg)
+                                  width: "=props.size ? (Number(props.size)*0.1) +'px' : '100%'"
+                              slots:
+                                default:
+                                  - component: f7-block
+                                    config:
+                                      class: number
+                                      style:
+                                        left: 50%
+                                        margin-top: 0px
+                                        position: absolute
+                                        text-align: center
+                                        top: 50%
+                                        transform: translate(-50%, -50%) rotate(-45deg)
+                                    slots:
+                                      default:
+                                        - component: Label
+                                          config:
+                                            style:
+                                              color: white
+                                              font-size: "=props.fontSizeMarker ? props.fontSizeMarker : '1em'"
+                                              font-weight: bold
+                                            text: =items[props.currentPointItem].state.split(' ')[0]
+                      - component: f7-block
+                        config:
+                          class: markerContainer
+                          style:
+                            height: 100%
+                            left: 50%
+                            margin-top: 0px
+                            opacity: 1
+                            pointer-events: none
+                            position: absolute
+                            text-align: center
+                            top: 50%
+                            transform: "=(items[props.setPointItem].state.split(' ')[0] >= Number(props.minTemp) && items[props.setPointItem].state.split(' ')[0] <= Number(props.maxTemp) ? 'translate(-50%, -50%) rotate('+(320/(Number(props.maxTemp)-Number(props.minTemp))*(items[props.setPointItem].state.split(' ')[0]-Number(props.minTemp))-160)+'deg)' : 'translate(-50%, -50%) rotate(0deg)')"
+                            transition: 0.7s ease
+                            width: "=props.size ? (Number(props.size)*0.1) +'px' : '10%'"
+                            z-index: 99 !important
+                        slots:
+                          default:
+                            - component: f7-block
+                              config:
+                                class: markerSet
+                                style:
+                                  background: "=props.colorSetMarker ? props.colorSetMarker : 'rgb(33, 150, 243)'"
+                                  border-radius: 50% 50% 50% 0
+                                  box-shadow: 0 0 5px 1px rgb(48, 46, 56)
+                                  height: "=props.size ? (Number(props.size)*0.1) +'px' : ''"
+                                  left: 50%
+                                  margin-top: 0px
+                                  padding-top: "=props.size ? '' : '100%'"
+                                  position: absolute
+                                  top: "=props.size ?  (Number(props.size)*Number(-0.0125)) +'px': '-2%'"
+                                  transform: translate(-50%,-50%) rotate(-45deg)
+                                  width: "=props.size ? (Number(props.size)*0.1) +'px' : '100%'"
+                                  z-index: 100 !important
+                              slots:
+                                default:
+                                  - component: f7-block
+                                    config:
+                                      class: number
+                                      style:
+                                        left: 50%
+                                        margin-top: 0px
+                                        position: absolute
+                                        text-align: center
+                                        top: 50%
+                                        transform: translate(-50%, -50%) rotate(45deg)
+                                    slots:
+                                      default:
+                                        - component: Label
+                                          config:
+                                            style:
+                                              color: white
+                                              font-size: "=props.fontSizeMarker ? props.fontSizeMarker : '1em'"
+                                              font-weight: bold
+                                            text: =items[props.setPointItem].state.split(' ')[0]
+                      - component: f7-block
+                        config:
+                          class: center
+                          style:
+                            background: "=props.colorControlRing ? props.colorControlRing : 'rgb(227, 228, 237)'"
+                            border-radius: 50%
+                            box-shadow: 0px 15px 35px 11px rgba(46, 44, 58,0.60)
+                            height: "=props.size ? (Number(props.size)*0.65) +'px' : '65%'"
+                            left: 50%
+                            margin-top: 0px
+                            position: absolute
+                            top: 50%
+                            transform: translate(-50%, -50%)
+                            width: "=props.size ? (Number(props.size)*0.65) +'px' : '65%'"
+                        slots:
+                          default:
+                            - component: oh-icon
+                              config:
+                                icon: "=(items[props.windowItem].state === 'OPEN') ? 'window-open' : 'window-closed'"
+                                style:
+                                  bottom: 40%
+                                  height: 50%
+                                  left: 50%
+                                  position: absolute
+                                  transform: translate(-50%,-50%)
+                                  width: 20%
+                                visible: "=props.windowItem ? true : false"
+                            - component: f7-block
+                              config:
+                                class: buttonContainer
+                                style:
+                                  display: "=props.coolingModeItem ? '' : 'none'"
+                                  height: 100%
+                                  left: 50%
+                                  margin-top: 0px
+                                  opacity: 1
+                                  position: absolute
+                                  text-align: center
+                                  top: 50%
+                                  transform: "=(props.fanSpeedItem && props.vaneItem) ? 'translate(-50%, -50%) rotate(0deg)' : (props.fanSpeedItem || props.vaneItem) ? 'translate(-50%, -50%) rotate(30deg)' : 'translate(-50%, -50%) rotate(0deg)'"
+                                  transition: 0.7s ease
+                                  width: "=props.size ? (Number(props.size)*0.15) +'px' : '15%'"
+                                  z-index: 99 !important
+                              slots:
+                                default:
+                                  - component: oh-button
+                                    config:
+                                      popoverOpen: ='.' + props.location + '.popoverCoolingMode'
+                                      style:
+                                        --f7-button-fill-hover-bg-color: transparent
+                                        --f7-button-hover-bg-color: transparent
+                                        bottom: 0%
+                                        color: "=props.colorButton ? props.colorButton + ' !important': ''"
+                                        height: 20%
+                                        left: 50%
+                                        position: absolute
+                                        transform: translate(-50%)
+                                        width: 100%
+                                    slots:
+                                      default:
+                                        - component: f7-icon
+                                          config:
+                                            color: "=props.coolingModeItem ? (items[props.coolingModeItem].displayState ==  props.coolingModeArray.split(',')[0] ? 'orange' : items[props.coolingModeItem].displayState == props.coolingModeArray.split(',')[1] ? 'red' : items[props.coolingModeItem].displayState == props.coolingModeArray.split(',')[2] ? 'yellow' : items[props.coolingModeItem].displayState == props.coolingModeArray.split(',')[3] ? 'white' : 'blue') : ''"
+                                            f7: "=props.coolingModeItem ? (items[props.coolingModeItem].displayState ==  props.coolingModeArray.split(',')[0] ? 'arrow_2_circlepath' : items[props.coolingModeItem].displayState == props.coolingModeArray.split(',')[1] ? 'thermometer_sun' : items[props.coolingModeItem].displayState == props.coolingModeArray.split(',')[2] ? 'drop' : items[props.coolingModeItem].displayState == props.coolingModeArray.split(',')[3] ? 'wind' : 'thermometer_snowflake') : ''"
+                                            style:
+                                              font-size: "=props.fontSizeButtons ? props.fontSizeButtons : '2em'"
+                                              margin-top: auto
+                                              position: absolute
+                                              top: 50%
+                                              transform: translate(-50%, -50%)
+                                        - component: f7-popover
+                                          config:
+                                            class: =props.location + ' popoverCoolingMode'
+                                          slots:
+                                            default:
+                                              - component: f7-card
+                                                config:
+                                                  action: variable
+                                                  actionVariable: myVar
+                                                  actionVariableValue: success
+                                                  class:
+                                                    - popover-close
+                                                  clearVariable: true
+                                                  noShadow: true
+                                                slots:
+                                                  default:
+                                                    - component: f7-row
+                                                      config: {}
+                                                      slots:
+                                                        default:
+                                                          - component: f7-col
+                                                            slots:
+                                                              default:
+                                                                - component: oh-repeater
+                                                                  config:
+                                                                    containerStyle:
+                                                                      width: 100%
+                                                                    for: option
+                                                                    itemOptions: =props.coolingModeItem
+                                                                    sourceType: itemStateOptions
+                                                                  slots:
+                                                                    default:
+                                                                      - component: oh-button
+                                                                        config:
+                                                                          action: command
+                                                                          actionCommand: =loop.option.value
+                                                                          actionItem: =props.coolingModeItem
+                                                                          active: "=props.coolingModeItem ? (items[props.coolingModeItem].state === loop.option.value ? true : false) : ''"
+                                                                          class: margin
+                                                                          color: "=props.colorButton ? props.colorButton : ''"
+                                                                          outline: true
+                                                                          text: =loop.option.label
+                            - component: f7-block
+                              config:
+                                class: buttonContainer
+                                style:
+                                  display: "=props.fanSpeedItem ? '' : 'none'"
+                                  height: 100%
+                                  left: 50%
+                                  margin-top: 0px
+                                  opacity: 1
+                                  position: absolute
+                                  text-align: center
+                                  top: 50%
+                                  transform: "=(props.coolingModeItem && props.vaneItem) ? 'translate(-50%, -50%) rotate(45deg)' : (props.coolingModeItem || props.vaneItem) ? 'translate(-50%, -50%) rotate(-30deg)' : 'translate(-50%, -50%) rotate(0deg)'"
+                                  transition: 0.7s ease
+                                  width: "=props.size ? (Number(props.size)*0.15) +'px' : '15%'"
+                                  z-index: 99 !important
+                              slots:
+                                default:
+                                  - component: oh-button
+                                    config:
+                                      popoverOpen: ='.' + props.location + '.popoverFanspeed'
+                                      style:
+                                        --f7-button-fill-hover-bg-color: transparent
+                                        --f7-button-hover-bg-color: transparent
+                                        bottom: 0%
+                                        color: "=props.colorButton ? props.colorButton + ' !important': ''"
+                                        height: 20%
+                                        left: 50%
+                                        position: absolute
+                                        transform: translate(-50%)
+                                        width: 100%
+                                    slots:
+                                      default:
+                                        - component: f7-icon
+                                          config:
+                                            color: purple
+                                            f7: wind
+                                            style:
+                                              font-size: "=props.fontSizeButtons ? props.fontSizeButtons : '2em'"
+                                              margin-top: auto
+                                              position: absolute
+                                              top: 50%
+                                              transform: translate(-50%, -50%)
+                                        - component: f7-popover
+                                          config:
+                                            class: =props.location + ' popoverFanspeed'
+                                          slots:
+                                            default:
+                                              - component: f7-card
+                                                config:
+                                                  action: variable
+                                                  actionVariable: myVar
+                                                  actionVariableValue: success
+                                                  class:
+                                                    - popover-close
+                                                  clearVariable: true
+                                                  noShadow: true
+                                                slots:
+                                                  default:
+                                                    - component: f7-row
+                                                      config: {}
+                                                      slots:
+                                                        default:
+                                                          - component: f7-col
+                                                            slots:
+                                                              default:
+                                                                - component: oh-repeater
+                                                                  config:
+                                                                    containerStyle:
+                                                                      width: 100%
+                                                                    for: option
+                                                                    itemOptions: =props.fanSpeedItem
+                                                                    sourceType: itemStateOptions
+                                                                  slots:
+                                                                    default:
+                                                                      - component: oh-button
+                                                                        config:
+                                                                          action: command
+                                                                          actionCommand: =loop.option.value
+                                                                          actionItem: =props.fanSpeedItem
+                                                                          active: "=props.fanSpeedItem ? (items[props.fanSpeedItem].state === loop.option.value ? true : false) : ''"
+                                                                          class: margin
+                                                                          color: "=props.colorButton ? props.colorButton : ''"
+                                                                          outline: true
+                                                                          text: =loop.option.label
+                            - component: f7-block
+                              config:
+                                class: buttonContainer
+                                style:
+                                  display: "=props.vaneItem ? '' : 'none'"
+                                  height: 100%
+                                  left: 50%
+                                  margin-top: 0px
+                                  opacity: 1
+                                  position: absolute
+                                  text-align: center
+                                  top: 50%
+                                  transform: "=(props.fanSpeedItem && props.coolingModeItem) ? 'translate(-50%, -50%) rotate(-45deg)' : (props.coolingModeItem || props.vaneItem) ? 'translate(-50%, -50%) rotate(45deg)' : 'translate(-50%, -50%) rotate(0deg)'"
+                                  transition: 0.7s ease
+                                  width: "=props.size ? (Number(props.size)*0.15) +'px' : '15%'"
+                                  z-index: 99 !important
+                              slots:
+                                default:
+                                  - component: oh-button
+                                    config:
+                                      popoverOpen: ='.' + props.location + '.popoverVanes'
+                                      style:
+                                        --f7-button-fill-hover-bg-color: transparent
+                                        --f7-button-hover-bg-color: transparent
+                                        bottom: 0%
+                                        color: "=props.colorButton ? props.colorButton + ' !important': ''"
+                                        height: 20%
+                                        left: 50%
+                                        position: absolute
+                                        transform: translate(-50%)
+                                        width: 100%
+                                    slots:
+                                      default:
+                                        - component: f7-icon
+                                          config:
+                                            color: purple
+                                            f7: arrow_up_arrow_down_square
+                                            style:
+                                              font-size: "=props.fontSizeButtons ? props.fontSizeButtons : '2em'"
+                                              margin-top: auto
+                                              position: absolute
+                                              top: 50%
+                                              transform: translate(-50%, -50%)
+                                        - component: f7-popover
+                                          config:
+                                            class: =props.location + ' popoverVanes'
+                                          slots:
+                                            default:
+                                              - component: f7-card
+                                                config:
+                                                  action: variable
+                                                  actionVariable: myVar
+                                                  actionVariableValue: success
+                                                  class:
+                                                    - popover-close
+                                                  clearVariable: true
+                                                  noShadow: true
+                                                slots:
+                                                  default:
+                                                    - component: f7-row
+                                                      config: {}
+                                                      slots:
+                                                        default:
+                                                          - component: f7-col
+                                                            slots:
+                                                              default:
+                                                                - component: oh-repeater
+                                                                  config:
+                                                                    containerStyle:
+                                                                      width: 100%
+                                                                    for: option
+                                                                    itemOptions: =props.vaneItem
+                                                                    sourceType: itemStateOptions
+                                                                  slots:
+                                                                    default:
+                                                                      - component: oh-button
+                                                                        config:
+                                                                          action: command
+                                                                          actionCommand: =loop.option.value
+                                                                          actionItem: =props.vaneItem
+                                                                          active: "=props.vaneItem ? (items[props.vaneItem].state === loop.option.value ? true : false) : ''"
+                                                                          class: margin
+                                                                          color: "=props.colorButton ? props.colorButton : ''"
+                                                                          outline: true
+                                                                          text: =loop.option.label
+                            - component: oh-button
+                              config:
+                                action: command
+                                actionCommand: "=Number(items[props.setPointItem].state.split(' ')[0]) > Number(props.minTemp) ? Number(items[props.setPointItem].state.split(' ')[0]) - 1.0 : ''"
+                                actionItem: =props.setPointItem
+                                style:
+                                  --f7-button-fill-hover-bg-color: transparent
+                                  --f7-button-hover-bg-color: transparent
+                                  color: "=props.colorButton ? props.colorButton : ''"
+                                  height: 50%
+                                  left: 10%
+                                  margin-top: 0px
+                                  position: absolute
+                                  top: 50%
+                                  transform: translate(-50%, -50%)
+                                  width: 30%
+                              slots:
+                                default:
+                                  - component: f7-icon
+                                    config:
+                                      f7: arrow_turn_left_down
+                                      style:
+                                        font-size: "=props.fontSizeButtons ? props.fontSizeButtons : '2em'"
+                                        margin-top: auto
+                                        position: absolute
+                                        top: 50%
+                                        transform: translate(-50%, -50%)
+                            - component: oh-button
+                              config:
+                                action: command
+                                actionCommand: "=Number(items[props.setPointItem].state.split(' ')[0]) < Number(props.maxTemp) ? Number(items[props.setPointItem].state.split(' ')[0]) + 1.0 : ''"
+                                actionItem: =props.setPointItem
+                                style:
+                                  --f7-button-fill-hover-bg-color: transparent
+                                  --f7-button-hover-bg-color: transparent
+                                  color: "=props.colorButton ? props.colorButton : ''"
+                                  height: 50%
+                                  left: 90%
+                                  margin-top: 0px
+                                  position: relative
+                                  top: 50%
+                                  transform: translate(-50%, -50%)
+                                  width: 30%
+                              slots:
+                                default:
+                                  - component: f7-icon
+                                    config:
+                                      f7: arrow_turn_right_up
+                                      style:
+                                        font-size: "=props.fontSizeButtons ? props.fontSizeButtons : '2em'"
+                                        margin-top: auto
+                                        position: absolute
+                                        top: 50%
+                                        transform: translate(-50%, -50%)
+                            - component: f7-block
+                              config:
+                                class: valveAnimation
+                                style:
+                                  animation: skeleton-effect-fade 2s linear infinite
+                                  background: "=props.colorSetMarker ? 'radial-gradient(' + props.colorSetMarker +' 30%, transparent 50%)' : 'radial-gradient(var(--f7-theme-color) 30%, transparent 50%)'"
+                                  border-radius: 50%
+                                  display: "=(props.valveItem && items[props.valveItem].state == 'ON' )? '' : 'none'"
+                                  height: 100%
+                                  left: 50%
+                                  margin-top: 0px
+                                  pointer-events: none
+                                  position: absolute
+                                  top: 50%
+                                  transform: translate(-50%, -50%)
+                                  width: 100%
+                                  z-index: -100 !important
+                            - component: f7-block
+                              config:
+                                class: small
+                                style:
+                                  animation: bound-in-small 0.6s ease forwards
+                                  background: "=props.colorCenter ? props.colorCenter : 'rgb(248, 249, 250)'"
+                                  border-radius: 50%
+                                  box-shadow: 0px 5px 10px 5px rgba(96, 93, 111,0.19)
+                                  height: "=props.size ? (Number(props.size)*0.375) +'px' : '57.6%'"
+                                  left: 50%
+                                  margin-top: 0px
+                                  position: absolute
+                                  text-align: center
+                                  top: 50%
+                                  transform: translate(-50%, -50%)
+                                  width: "=props.size ? (Number(props.size)*0.375) +'px' : '57.6%'"
+                                  z-index: 100 !important
+                              slots:
+                                default:
+                                  - component: f7-block
+                                    config:
+                                      class: heat
+                                      style:
+                                        color: "=props.colorTypo ? props.colorTypo : 'rgb(87, 84, 95)'"
+                                        font-size: "=props.size ? (Number(props.size)*0.0375) +'px' : '14px'"
+                                        font-weight: 300
+                                    slots:
+                                      default:
+                                        - component: Label
+                                          config:
+                                            text: =props.location
+                                  - component: f7-block
+                                    config:
+                                      class: heat
+                                      style:
+                                        color: "=props.colorTypo ? props.colorTypo : 'rgb(87, 84, 95)'"
+                                        font-size: "=props.fontSizeCenter ? props.fontSizeCenter : '2em'"
+                                        font-weight: 300
+                                    slots:
+                                      default:
+                                        - component: Label
+                                          config:
+                                            text: "=props.unit ? items[props.setPointItem].state.split(' ')[0] + '' + props.unit : items[props.setPointItem].state.split(' ')[0]"
+                                  - component: f7-icon
+                                    config:
+                                      f7: power
+                                      style:
+                                        bottom: 5%
+                                        color: '=(items[props.powerItem].state === "OFF") ? "red" : "green"'
+                                        font-size: "=props.fontSizeButtons ? props.fontSizeButtons : '2em'"
+                                        left: 50%
+                                        position: absolute
+                                        transform: translate(-50%)
+                                        width: 50%
+                                  - component: oh-button
+                                    config:
+                                      action: command
+                                      actionCommand: '=(items[props.powerItem].state === "OFF") ? "ON" : "OFF"'
+                                      actionItem: =props.powerItem
+                                      style:
+                                        --f7-button-fill-hover-bg-color: transparent
+                                        --f7-button-hover-bg-color: transparent
+                                        bottom: 5%
+                                        left: 50%
+                                        position: absolute
+                                        transform: translate(-50%)
+                                        width: 50%
